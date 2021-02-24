@@ -50,11 +50,17 @@ echo "DATADIR=$DATADIR"
 echo "JOBDIR=$JOBDIR"
 
 
+RESULT_BACKEND_HOST=$RESULT_BACKEND_HOST
+RESULT_BACKEND_PORT=$RESULT_BACKEND_PORT
+RESULT_BACKEND_DBNAME=$RESULT_BACKEND_DBNAME
+DATADIR=$DATADIR
+JOBDIR=$JOBDIR
+
 
 ###############################
 ##    RUN CELERY
 ###############################
-CMD="runuser -l $RUNUSER -g $RUNUSER -c'""/usr/local/bin/celery --broker=$BROKER_URL --result-backend=$RESULT_BACKEND_URL --app=$APP_NAME worker --loglevel=INFO --concurrency=$NPROC -Q $QUEUE""'"
+CMD="runuser -l $RUNUSER -g $RUNUSER -c'""export CAESAR_REST_DBNAME=$RESULT_BACKEND_DBNAME; export CAESAR_REST_DBHOST=$RESULT_BACKEND_HOST; export CAESAR_REST_DBPORT=$RESULT_BACKEND_PORT; export CAESAR_REST_JOBDIR=$JOBDIR; export CAESAR_REST_DATADIR=$DATADIR; /usr/local/bin/celery --broker=$BROKER_URL --result-backend=$RESULT_BACKEND_URL --app=$APP_NAME worker --loglevel=INFO --concurrency=$NPROC -Q $QUEUE""'"
 
 
 echo "INFO: Running celery beat worker (cmd=$CMD) ..."
